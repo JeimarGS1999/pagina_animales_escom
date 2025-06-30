@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.secret_key = 'supersecreto'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///animales.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 # Manejo de sesiones
 login_manager = LoginManager()
@@ -488,4 +488,4 @@ if __name__ == '__main__':
     if not os.path.exists('animales.db'):
         with app.app_context():
             db.create_all()
-    socketio.run(app, debug=True)
+    socketio.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
