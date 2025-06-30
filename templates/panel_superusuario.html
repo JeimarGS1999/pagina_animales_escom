@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">Panel del Superusuario</h2>
+
+<table class="table-auto w-full bg-white shadow rounded">
+  <thead>
+    <tr class="bg-green-600 text-white">
+      <th class="px-4 py-2">Nombre</th>
+      <th class="px-4 py-2">Estatus</th>
+      <th class="px-4 py-2">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for animal in animales %}
+    <tr class="border-t">
+      <td class="px-4 py-2">{{ animal.nombre }}</td>
+      <td class="px-4 py-2">{{ animal.estatus }}</td>
+      <td class="px-4 py-2">
+        {% if animal.estatus != 'Eliminado' %}
+        <form action="{{ url_for('eliminar_animal', id=animal.id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas ocultar este animal?');">
+          <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Ocultar</button>
+        </form>
+        {% else %}
+        <span class="text-gray-500 italic">Oculto</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

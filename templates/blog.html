@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-2xl font-semibold mb-4">Información general</h2>
+<div class="mb-6 p-4 bg-white rounded shadow">
+  <p>
+    Bienvenido al blog de ayuda para animales callejeros en ESCOM. Aquí puedes informarte y participar en la conversación.
+  </p>
+</div>
+
+<h3 class="text-xl font-semibold mb-2">Chat interactivo</h3>
+<div id="chat" class="h-80 overflow-y-auto border border-gray-300 p-4 bg-white rounded shadow">
+  <p id="no-mensajes" class="text-gray-500">Aún no hay mensajes.</p>
+</div>
+
+<form id="chat-form" class="mt-4 flex flex-col gap-3" enctype="multipart/form-data">
+  <input id="usuario" type="hidden" value="{{ current_user.username }}">
+  
+  <input id="mensaje" type="text" placeholder="Escribe tu mensaje..." class="border rounded p-2" autocomplete="off" />
+  
+  <input type="file" id="imagen" accept="image/*" class="border p-2 rounded" />
+
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Enviar</button>
+</form>
+
+<!-- Incluye la librería Socket.IO desde un CDN confiable -->
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+  const socket = io();
+
+  const chat = document.getElementById('chat');
+  const form = document.getElementById('chat-form');
+  const usuarioInput = document.getElementById('usuario');
+  const mensajeInput = document.getElementById('mensaje');
+  const imagenInput = document.getElementById('imagen');
+
+  function agregarMensaje(data) {
+    const noMensajes = document.getElementById('no-mensajes');
+    if (noMensajes) noMensajes.remove();  // elimina mensaje de "Aún no hay mensajes"
+
+    const div = document.createElement('div');
+    div.className = "mb-4";
+
+    // Mensaje de texto (si existe)
+    if (data.mensaje) {
+      const texto = document.createElement('p');
+      texto.innerHTML = `<strong>${data.usuario}:</strong> ${data.mensaje}`;
+      div.appendChild(texto);
+    }
+
+    // Imagen (si existe)
+    if (data.imagen_url) {
+      const img = document.createElement('img');
+      img.src = data.imagen_url;
+      img.alt = "Imagen enviada";
+      img.className = "mt-2 max-h-48 rounded border";
+      div.appendChild(img);
+    }
+
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;  // scroll automático
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const usuario = usuarioInput.value.trim();
+    const mensaje = mensajeInput.value.trim();
+    const imagen = imagenInput.files[0];
+
+    if (!mensaje && !imagen) return;
+
+    const formData = new FormData();
+    formData.append('usuario', usuario);
+    formData.append('mensaje', mensaje);
+    if (imagen) formData.append('imagen', imagen);
+
+    await fetch('/chat_mensaje', {
+      method: 'POST',
+      body: formData
+    });
+
+    mensajeInput.value = '';
+    imagenInput.value = '';
+    mensajeInput.focus();
+  });
+
+  socket.on('mensaje recibido', agregarMensaje);
+</script>
+{% endblock %}

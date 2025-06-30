@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ayuda Animal ESCOM</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tu CSS personalizado -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
+
+<header class="bg-green-600 text-white p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+
+        <!-- IZQUIERDA: Login/Register o Logout -->
+        <div class="space-x-4">
+            {% if current_user.is_authenticated %}
+                <span class="font-semibold">Hola, {{ current_user.username }}</span>
+                <a href="{{ url_for('logout') }}" class="hover:underline">Cerrar sesión</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="hover:underline">Iniciar sesión</a>
+                <a href="{{ url_for('register') }}" class="hover:underline">Registrarse</a>
+            {% endif %}
+        </div>
+
+        <!-- DERECHA: Navegación principal -->
+        <nav class="space-x-6">
+            <a href="{{ url_for('index') }}" class="hover:underline">Inicio</a>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('reportar') }}" class="hover:underline">Reportar</a>
+                <a href="{{ url_for('blog') }}" class="hover:underline">Blog</a>
+            {% endif %}
+            <a href="{{ url_for('ubicacion') }}" class="hover:underline">Ubicación</a>
+            {% if current_user.is_authenticated and current_user.rol == 'admin' or current_user.rol == 'superusuario'%}
+                <a href="{{ url_for('dashboard') }}" class="hover:underline">Dashboard</a>
+            {% endif %}
+            {% if current_user.is_authenticated and current_user.rol == 'superusuario' %}
+                <a href="{{ url_for('validar_admines') }}" class="hover:underline">Validar admins</a>
+            {% endif %}
+            {% if current_user.is_authenticated and current_user.rol == 'superusuario' %}
+                <a href="{{ url_for('panel_superusuario') }}" class="hover:underline">Panel Superusuario</a>
+            {% endif %}
+            {% if not (current_user.is_authenticated and current_user.rol in ['admin', 'superusuario']) %}
+                <a href="{{ url_for('ayudar') }}" class="hover:underline">Cómo ayudar</a>
+                <a href="{{ url_for('contacto') }}" class="hover:underline">Contacto</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<main class="container mx-auto flex-grow p-6">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-message">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="bg-green-600 text-white text-center p-4 mt-auto">
+    <p>© 2025 Ayuda Animal ESCOM - Proyecto Altruista ESCOM-IPN</p>
+</footer>
+
+</body>
+</html>

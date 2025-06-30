@@ -1,0 +1,142 @@
+/* ===== Estilos Generales ===== */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0fdf4; /* verde muy claro */
+  color: #333;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  color: #2f855a; /* Verde institucional */
+  font-weight: bold;
+}
+
+a {
+  color: #2563eb; /* Azul accesible */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Encabezado ===== */
+header {
+  background-color: #38a169; /* verde principal */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+header a {
+  color: white;
+  font-weight: 500;
+}
+
+/* ===== Footer ===== */
+footer {
+  background-color: #2f855a;
+  color: white;
+}
+
+/* ===== Tarjetas / Contenedores ===== */
+.card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1rem;
+}
+
+.card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* ===== Botones ===== */
+button,
+input[type="submit"] {
+  background-color: #38a169;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background-color: #2f855a;
+  transform: scale(1.03);
+}
+
+/* ===== Formularios ===== */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #38a169;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(56, 161, 105, 0.3);
+}
+
+/* ===== Chat interactivo ===== */
+#chat {
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 12px;
+  height: 300px;
+  overflow-y: auto;
+  font-size: 0.95rem;
+}
+
+#chat div {
+  margin-bottom: 12px;
+  background-color: #f7fafc;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+#chat div strong {
+  color: #2f855a;
+}
+
+#chat img {
+  margin-top: 6px;
+  max-height: 200px;
+  border-radius: 6px;
+}
+
+/* ===== Mensajes flash ===== */
+.flash-message {
+  background-color: #c6f6d5;
+  color: #22543d;
+  padding: 1rem;
+  border-left: 6px solid #38a169;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 640px) {
+  .card {
+    padding: 1rem;
+  }
+
+  #chat {
+    height: 250px;
+  }
+}

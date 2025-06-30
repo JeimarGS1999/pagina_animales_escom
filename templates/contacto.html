@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-3xl font-semibold mb-6">Contáctanos</h2>
+
+<form method="POST" class="bg-white p-6 rounded shadow max-w-lg mx-auto">
+    <label class="block mb-4">
+        <span class="font-semibold mb-1 block">Nombre</span>
+        <input type="text" name="nombre" required class="w-full border rounded px-3 py-2" placeholder="Tu nombre completo">
+    </label>
+
+    <label class="block mb-4">
+        <span class="font-semibold mb-1 block">Correo electrónico</span>
+        <input type="email" name="email" required class="w-full border rounded px-3 py-2" placeholder="tuemail@ejemplo.com">
+    </label>
+
+    <label class="block mb-6">
+        <span class="font-semibold mb-1 block">Mensaje</span>
+        <textarea name="mensaje" rows="5" required class="w-full border rounded px-3 py-2" placeholder="Escribe tu mensaje aquí"></textarea>
+    </label>
+
+    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Enviar mensaje</button>
+</form>
+{% endblock %}

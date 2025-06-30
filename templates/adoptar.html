@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-3xl font-semibold mb-6">Adoptar: {{ animal.nombre }}</h2>
+
+<form method="POST" class="bg-white p-6 rounded shadow max-w-lg mx-auto">
+    <label class="block mb-4">
+        <span class="font-semibold mb-1 block">Nombre completo</span>
+        <input
+            type="text"
+            name="nombre"
+            required
+            class="w-full border rounded px-3 py-2"
+            placeholder="Tu nombre completo"
+            value="{{ default_nombre | default('') }}"
+        >
+    </label>
+
+    <label class="block mb-4">
+        <span class="font-semibold mb-1 block">Correo electrónico</span>
+        <input
+            type="email"
+            name="email"
+            required
+            class="w-full border rounded px-3 py-2"
+            placeholder="tuemail@ejemplo.com"
+            value="{{ default_email | default('') }}"
+        >
+    </label>
+
+    <label class="block mb-6">
+        <span class="font-semibold mb-1 block">Comentario (opcional)</span>
+        <textarea
+            name="comentario"
+            rows="4"
+            class="w-full border rounded px-3 py-2"
+            placeholder="Cuéntanos por qué quieres adoptarlo"
+        ></textarea>
+    </label>
+
+    <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Enviar solicitud</button>
+</form>
+
+{% endblock %}
+

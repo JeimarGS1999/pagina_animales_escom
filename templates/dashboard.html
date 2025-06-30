@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-3xl font-semibold mb-6">Panel de Animales Reportados</h2>
+
+<table class="table-auto w-full bg-white shadow rounded mb-8">
+    <thead>
+        <tr class="bg-gray-200">
+            <th class="p-3">ID</th>
+            <th class="p-3">Nombre</th>
+            <th class="p-3">Especie</th>
+            <th class="p-3">Edad</th>
+            <th class="p-3">Estado</th>
+            <th class="p-3">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for animal in animales %}
+        <tr class="border-t">
+            <td class="p-3">{{ animal.id }}</td>
+            <td class="p-3">{{ animal.nombre }}</td>
+            <td class="p-3">{{ animal.especie }}</td>
+            <td class="p-3">{{ animal.edad }}</td>
+            <td class="p-3 font-semibold
+                {% if animal.estatus == "Adoptado" %}text-green-600
+                {% elif animal.estatus == "En proceso" %}text-yellow-600
+                {% else %}text-blue-600{% endif %}">
+                {{ animal.estatus or "Disponible" }}
+            </td>
+            <td class="p-3">
+                <form action="{{ url_for('actualizar_estatus', id=animal.id) }}" method="POST" class="flex items-center space-x-2">
+                    <select name="estatus" class="border rounded px-2 py-1">
+                        <option value="Disponible" {% if animal.estatus == "Disponible" %}selected{% endif %}>Disponible</option>
+                        <option value="En proceso" {% if animal.estatus == "En proceso" %}selected{% endif %}>En proceso</option>
+                        <option value="Adoptado" {% if animal.estatus == "Adoptado" %}selected{% endif %}>Adoptado</option>
+                    </select>
+                    <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Actualizar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr class="my-8">
+
+<h2 class="text-2xl font-semibold mb-4">Ubicaciones reportadas de animales callejeros</h2>
+
+<table class="table-auto w-full bg-white shadow rounded">
+    <thead>
+        <tr class="bg-gray-200">
+            <th class="p-2">ID</th>
+            <th class="p-2">Latitud</th>
+            <th class="p-2">Longitud</th>
+            <th class="p-2">Descripción</th>
+            <th class="p-2">Imagen</th>
+            <th class="p-2">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in ubicaciones %}
+        <tr class="border-t align-top">
+            <td class="p-2">{{ u.id }}</td>
+            <td class="p-2">{{ u.lat }}</td>
+            <td class="p-2">{{ u.lng }}</td>
+            <td class="p-2">{{ u.descripcion }}</td>
+            <td class="p-2">
+                {% if u.imagen %}
+                    <img src="{{ url_for('static', filename='img/' + u.imagen) }}" alt="Imagen" class="h-24 rounded">
+                {% else %}
+                    Sin imagen
+                {% endif %}
+            </td>
+            <td class="p-2">
+                {% if (u.lat, u.lng) not in coords_animales %}
+                    <form action="{{ url_for('crear_desde_ubicacion', id=u.id) }}" method="POST" class="space-y-1">
+                        <input type="text" name="nombre" placeholder="Nombre" class="border rounded px-2 py-1 w-full" required>
+                        
+                        <select name="especie" class="border rounded px-2 py-1 w-full" required>
+                            <option value="">Selecciona especie</option>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                            <option value="Otra">Otra</option>
+                        </select>
+
+                        <input type="text" name="edad" placeholder="Edad" class="border rounded px-2 py-1 w-full" required>
+
+                        <textarea name="descripcion" rows="2" placeholder="Descripción" class="border rounded px-2 py-1 w-full" required>{{ u.descripcion }}</textarea>
+
+                        <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 mt-1 w-full">
+                            Agregar como adoptable
+                        </button>
+                    </form>
+                {% else %}
+                    <!-- Ya existe un animal para esta ubicación -->
+                    <span class="text-gray-500 italic">Animal ya agregado para esta ubicación</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

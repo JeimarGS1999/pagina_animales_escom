@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-3xl font-semibold mb-6">Reportar Animal Callejero</h2>
+
+<form method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded shadow max-w-lg mx-auto">
+    <label class="block mb-4">
+        <span class="block font-semibold mb-1">Nombre</span>
+        <input type="text" name="nombre" required class="w-full border rounded px-3 py-2" placeholder="Nombre del animal">
+    </label>
+
+    <label class="block mb-4">
+        <span class="block font-semibold mb-1">Especie</span>
+        <select name="especie" class="w-full border rounded px-3 py-2">
+            <option>Perro</option>
+            <option>Gato</option>
+            <option>Otra</option>
+        </select>
+    </label>
+
+    <label class="block mb-4">
+        <span class="block font-semibold mb-1">Edad</span>
+        <input type="text" name="edad" class="w-full border rounded px-3 py-2" placeholder="Ej. 2 años o Desconocido">
+    </label>
+
+    <label class="block mb-4">
+        <span class="block font-semibold mb-1">Descripción</span>
+        <textarea name="descripcion" rows="4" class="w-full border rounded px-3 py-2" placeholder="Detalles adicionales"></textarea>
+    </label>
+
+    <label class="block mb-4">
+        <span class="block font-semibold mb-1">Foto del animal</span>
+        <input type="file" name="imagen" accept="image/*" class="w-full">
+        <small class="text-gray-500 block">Tamaño máximo: 5MB. Formatos permitidos: jpg, png, jpeg.</small>
+    </label>
+
+    <button type="button" id="btnUbicacion" class="bg-blue-600 text-white px-4 py-2 rounded mb-4">
+        Compartir mi ubicación
+    </button>
+
+    <!-- Mapa para mostrar ubicación actual -->
+    <div id="mapaUbicacion" style="height: 300px; width: 100%; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 1rem; display:none;"></div>
+
+    <!-- Inputs ocultos para latitud y longitud -->
+    <input type="hidden" name="lat" id="lat">
+    <input type="hidden" name="lng" id="lng">
+
+    <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded">
+        Reportar animal
+    </button>
+</form>
+
+<script>
+    let map;
+    let marker;
+
+    document.getElementById('btnUbicacion').addEventListener('click', () => {
+        if (!navigator.geolocation) {
+            alert('Tu navegador no soporta geolocalización.');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = parseFloat(position.coords.latitude);
+                const lng = parseFloat(position.coords.longitude);
+
+                console.log("Ubicación obtenida:", lat, lng);
+
+                // Mostrar mapa
+                const mapaDiv = document.getElementById('mapaUbicacion');
+                mapaDiv.style.display = 'block';
+
+                const coords = { lat: lat, lng: lng };
+
+                // Crear mapa si no existe
+                if (!map) {
+                    map = new google.maps.Map(mapaDiv, {
+                        center: coords,
+                        zoom: 18,
+                    });
+                } else {
+                    map.setCenter(coords);
+                }
+
+                // Crear marcador
+                if (!marker) {
+                    marker = new google.maps.Marker({
+                        position: coords,
+                        map: map,
+                        draggable: true,
+                        title: "Ubicación del avistamiento"
+                    });
+
+                    marker.addListener('dragend', function (event) {
+                        document.getElementById('lat').value = event.latLng.lat();
+                        document.getElementById('lng').value = event.latLng.lng();
+                    });
+                } else {
+                    marker.setPosition(coords);
+                }
+
+                // Guardar lat/lng en inputs ocultos
+                document.getElementById('lat').value = lat;
+                document.getElementById('lng').value = lng;
+            },
+            (error) => {
+                console.error("Error obteniendo ubicación:", error);
+                alert("No se pudo obtener tu ubicación. Verifica los permisos del navegador.");
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    });
+</script>
+
+
+<!-- Google Maps API (pon tu API key) -->
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0gq8T0gNu9fs_IgCSlbT9twxmp48R0lw">
+</script>
+
+{% endblock %}
+

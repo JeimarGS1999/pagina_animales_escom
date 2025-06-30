@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-2xl font-semibold mb-4">Validar administradores pendientes</h2>
+
+{% if admins %}
+    <table class="w-full border-collapse border">
+        <thead>
+            <tr>
+                <th class="border px-4 py-2">Usuario</th>
+                <th class="border px-4 py-2">Email</th>
+                <th class="border px-4 py-2">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for admin in admins %}
+            <tr>
+                <td class="border px-4 py-2">{{ admin.username }}</td>
+                <td class="border px-4 py-2">{{ admin.email }}</td>
+                <td class="border px-4 py-2">
+                    <form action="{{ url_for('aprobar_admin', user_id=admin.id) }}" method="POST">
+                        <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Aprobar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No hay administradores pendientes por aprobar.</p>
+{% endif %}
+{% endblock %}

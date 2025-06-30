@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-2xl font-semibold mb-4">Ubicación de avistamientos</h2>
+
+<div id="map" style="height: 500px;" class="rounded shadow mb-4"></div>
+
+<form method="POST" action="{{ url_for('ubicacion') }}" enctype="multipart/form-data" class="bg-white p-4 shadow rounded max-w-lg">
+    <input type="hidden" id="lat" name="lat">
+    <input type="hidden" id="lng" name="lng">
+
+    <label class="block mb-2">Descripción breve del avistamiento
+        <textarea name="descripcion" required class="w-full border p-2 mt-1"></textarea>
+    </label>
+
+    <label class="block mb-2">Subir imagen del animal (opcional)
+        <input type="file" name="imagen" accept="image/*" class="w-full border p-2 mt-1">
+    </label>
+
+    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded mt-4">Guardar ubicación</button>
+</form>
+
+<script>
+    let map;
+
+    function initMap() {
+        const escom = { lat: 19.504694, lng: -99.146908 };
+
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: escom,
+            zoom: 17,
+        });
+
+        let marker = null;
+
+        // Permitir al usuario agregar un nuevo marcador
+        map.addListener("click", (e) => {
+            if (marker) marker.setMap(null);
+            marker = new google.maps.Marker({
+                position: e.latLng,
+                map: map,
+                title: "Nuevo avistamiento"
+            });
+            document.getElementById("lat").value = e.latLng.lat();
+            document.getElementById("lng").value = e.latLng.lng();
+        });
+
+        // Marcadores de ubicaciones generales
+        const ubicaciones = {{ ubicaciones | tojson }};
+        ubicaciones.forEach(p => {
+            const marker = new google.maps.Marker({
+                position: { lat: parseFloat(p.lat), lng: parseFloat(p.lng) },
+                map: map,
+                title: p.descripcion || "Avistamiento"
+            });
+
+            const contenido = `
+                <div style="max-width: 250px;">
+                    <strong>Avistamiento:</strong><br>
+                    ${p.descripcion}
+                    ${p.imagen ? `<br><img src="${p.imagen}" style="max-width: 100%; max-height: 150px; margin-top: 5px; border-radius: 6px;">` : ''}
+                </div>
+            `;
+
+            const infowindow = new google.maps.InfoWindow({ content: contenido });
+
+            marker.addListener("click", () => {
+                infowindow.open(map, marker);
+            });
+        });
+
+        // Marcadores azules para animales reportados
+        const animales = {{ animales | tojson }};
+        animales.forEach(a => {
+            const animalMarker = new google.maps.Marker({
+                position: { lat: parseFloat(a.lat), lng: parseFloat(a.lng) },
+                map: map,
+                icon: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                title: a.nombre
+            });
+
+            const contenido = `
+                <div style="max-width: 250px;">
+                    <h3 style="margin-bottom: 5px;">${a.nombre} (${a.especie})</h3>
+                    <img src="${a.imagen}" alt="${a.nombre}" style="width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">
+                    <p>${a.descripcion}</p>
+                </div>
+            `;
+
+            const infoWindow = new google.maps.InfoWindow({ content: contenido });
+
+            animalMarker.addListener("click", () => {
+                infoWindow.open(map, animalMarker);
+            });
+        });
+    }
+</script>
+
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0gq8T0gNu9fs_IgCSlbT9twxmp48R0lw&callback=initMap">
+</script>
+{% endblock %}

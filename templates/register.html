@@ -1,0 +1,31 @@
+<!-- register.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">Registro</h2>
+        <form method="POST" action="{{ url_for('register') }}">
+            <input type="text" name="username" placeholder="Nombre de usuario" required class="w-full mb-4 p-2 border rounded">
+            <input type="email" name="email" placeholder="Correo electrónico" required class="w-full mb-4 p-2 border rounded">
+            <input type="password" name="password" placeholder="Contraseña" required class="w-full mb-4 p-2 border rounded">
+            <input type="password" name="confirm_password" placeholder="Confirmar contraseña" required class="w-full mb-4 p-2 border rounded">
+            
+            <!-- Selector de rol -->
+            <label class="block mb-2 font-medium">Rol:</label>
+            <select name="rol" class="w-full mb-4 p-2 border rounded">
+                <option value="usuario">Usuario</option>
+                <option value="admin">Administrador</option>
+            </select>
+
+            <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Registrarse</button>
+        </form>
+        <p class="mt-4 text-center text-sm">¿Ya tienes cuenta? <a href="{{ url_for('login') }}" class="text-blue-600 underline">Inicia sesión</a></p>
+    </div>
+</body>
+</html>
+
